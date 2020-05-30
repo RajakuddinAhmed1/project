@@ -1,0 +1,97 @@
+#!/usr/bin/python
+
+from mininet.net import Mininet
+from mininet.node import Controller, RemoteController, Ovscontroller
+from mininet.node import CPULimitedHost, Host, Node
+from mininet.node import OVSKernalSwitch, UserSwitch
+from mininet.node import IVSSwitch
+from mininet.cli import CLI
+from mininet.log import setLogLevel, info
+from mininet.link import TCLink, Intf
+from subprocess import call
+
+def myNetwork():
+  net=Mininet (topo=none,
+              build=False,
+              ipBase='10.0.0.0/8')
+
+  info('*** Adding controller\n')
+  c2=net.addcontroller(name='c2',
+                    controller=controller,
+                    protocol='top',
+                    port=6633)
+
+  c1=net.addcontroller(name='c1',
+                    controller=controller,
+                    protocol='top',
+                    port=6633)
+  c0=net.addcontroller(name='c0',
+                    controller=controller,
+                    protocol='top',
+                    port=6633)
+
+
+info ('***Add switches\n')
+s9=net.addSwitch ('s9',cls=OVSKernalSwitch)
+s7=net.addSwitch ('s7',cls=OVSKernalSwitch)
+s10=net.addSwitch ('s10',cls=OVSKernalSwitch)
+s6=net.addSwitch ('s6',cls=OVSKernalSwitch)
+s3=net.addSwitch ('s3',cls=OVSKernalSwitch)
+s5=net.addSwitch ('s5',cls=OVSKernalSwitch)
+s2=net.addSwitch ('s2',cls=OVSKernalSwitch)
+s1=net.addSwitch ('s1',cls=OVSKernalSwitch)
+s12=net.addSwitch ('s12',cls=OVSKernalSwitch)
+s8=net.addSwitch ('s8',cls=OVSKernalSwitch)
+s11=net.addSwitch ('s11',cls=OVSKernalSwitch)
+
+info ('***Add hosts\n')
+h3=net.addHost('h3',cls=Host, ip='10.0.0.3',defaultRoute=None)
+h2=net.addHost('h2',cls=Host, ip='10.0.0.2',defaultRoute=None)
+h1=net.addHost('h1',cls=Host, ip='10.0.0.1',defaultRoute=None)
+
+info ('***Add links\n')
+net.addLink(s4,s3)
+net.addLink(s3,s2)
+net.addLink(s3,s1)
+net.addLink(s4,s2)
+net.addLink(s6,s7)
+net.addLink(s7,s5)
+net.addLink(s6,s5)
+net.addLink(s7,s8)
+net.addLink(s10,s12)
+net.addLink(s12,s11)
+net.addLink(s9,s10)
+net.addLink(s10,s11)
+net.addLink(s1,h1)
+net.addLink(s6,h2)
+net.addLink(s10,h3)
+
+info('***starting network\n')
+net.build()
+info('***starting controllers\n')
+for controller in net.controllers;
+     controller.start()
+
+info('***starting switches\n')
+net.get ('s9').start([c2])
+net.get ('s7').start([c1])
+net.get ('s10').start([c2,c1])
+net.get ('s6').start([c1])
+net.get ('s3').start([c0])
+net.get ('s5').start([c1,c0])
+net.get ('s2').start([c0])
+net.get ('s1').start([c0])
+net.get ('s4').start([c0,c2])
+net.get ('s12').start([c2])
+net.get ('s8).start([c1])
+net.get ('s11').start([c2])
+ 
+
+info('***post configure swutches and hosts\n')
+
+CLI(net)
+net.stop()
+
+if_name_=='_main_':
+   setLogLevel('info')
+   myNetwork()
